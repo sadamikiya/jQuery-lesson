@@ -39,7 +39,7 @@
     
     $(function () {
       $('.nav li').click(function () {
-        var index = $(this).index();
+        let index = $(this).index();
         
         $('.contents li').addClass('is-hidden');
         $('.contents li').eq(index).removeClass('is-hidden');
