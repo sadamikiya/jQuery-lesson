@@ -18,7 +18,7 @@
   <script src="../../common/js/jquery.js"></script>
   <script>
     // 回答はここに書いてね
-    
+
     $(function () {
       const wrapper = $('#wrapper');
 
@@ -60,28 +60,44 @@
 
       wrapper.on('click', '#pokemon_search', function () {
         let randomId = Math.floor(Math.random() * 151) + 1;
-        $.get(`https://pokeapi.co/api/v2/pokemon/${randomId}`)
+        $.ajax({
+          url: `https://pokeapi.co/api/v2/pokemon/${randomId}`,
+          method: 'GET'
+        })
           .done(function (data) {
-            $.get(`https://pokeapi.co/api/v2/pokemon-species/${randomId}`)
+
+            $.ajax({
+              url: `https://pokeapi.co/api/v2/pokemon-species/${randomId}`,
+              method: 'GET'
+            })
               .done(function (speciesData) {
                 let jaName = speciesData.names.find(name => name.language.name === 'ja');
                 wrapper.html(encountHtml);
                 $('.name').text(jaName ? jaName.name : data.name);
                 $('.img').attr('src', data.sprites.front_default);
+              })
+              .fail(function (err) {
+                consol.error('Failed to fetch Pokémon species data:', err);
               });
           })
-          .fail(function () {
-            wrapper.html('<p>逃げられてしまった...</p>');
+          .fail(function (err) {
+            console.error('Failed to fetch Pokémon data:', err);
           });
       });
 
       wrapper.on('click', '#catch', function () {
         let isSuccess = Math.random() < 0.5;
         if (isSuccess) {
-          $.get('https://pokeapi.co/api/v2/item/4')
+          $.ajax({
+            url: 'https://pokeapi.co/api/v2/item/4',
+            method: 'GET'
+          })
             .done(function (data) {
               wrapper.html(doneHtml);
               $('.img').attr('src', data.sprites.default);
+            })
+            .fail(function (err) {
+              console.error('Failed to fetch item data:', err);
             });
         } else {
           wrapper.html(failHtml);
